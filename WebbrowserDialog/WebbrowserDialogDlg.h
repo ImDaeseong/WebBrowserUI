@@ -46,5 +46,5 @@ public:
 	CButton m_btnLeft;
 	CButton m_btnRight;
 	CButton m_btnOK;	
-	void MoveButtonClick(int x, int y, int width = 0, int height = 0);	
+	void WebBrowserMoveClick(int x, int y, int width = 0, int height = 0);	
 };

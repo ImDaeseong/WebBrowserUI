@@ -25,7 +25,7 @@ BOOL CWebBrowser2Ex::PreTranslateMessage(MSG* pMsg)
 		ScreenToClient(&pos);
 
 		CWebbrowserDialogDlg* pMain = (CWebbrowserDialogDlg*)AfxGetMainWnd();
-		pMain->MoveButtonClick(pos.x, pos.y);
+		pMain->WebBrowserMoveClick(pos.x, pos.y);
 	}
 	return CWnd::PreTranslateMessage(pMsg);
 }

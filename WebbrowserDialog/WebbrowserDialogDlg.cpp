@@ -93,6 +93,50 @@ BOOL CWebbrowserDialogDlg::PreTranslateMessage(MSG* pMsg)
 	return CDialog::PreTranslateMessage(pMsg);
 }
 
+void GetRoundRectPath(GraphicsPath *pPath, Rect rBounds, int dia, int borderSize)
+{
+    Rect r(rBounds);
+
+    r.Inflate(-borderSize / 2, -borderSize / 2);
+
+    // diameter can't exceed width or height
+    if (dia > r.Width)	dia = r.Width;
+    if (dia > r.Height)	dia = r.Height;
+
+    // define a corner 
+    Rect Corner(r.X, r.Y, dia, dia);
+
+    // begin path
+    pPath->Reset();
+
+    // top left
+    pPath->AddArc(Corner, 180, 90);
+
+    // tweak needed for radius of 10 (dia of 20)
+    if (dia == 20)
+    {
+        Corner.Width += 1;
+        Corner.Height += 1;
+        r.Width -= 1;
+        r.Height -= 1;
+    }
+
+    // top right
+    Corner.X += (r.Width - dia - 1);
+    pPath->AddArc(Corner, 270, 90);
+
+    // bottom right
+    Corner.Y += (r.Height - dia - 1);
+    pPath->AddArc(Corner, 0, 90);
+
+    // bottom left
+    Corner.X -= (r.Width - dia - 1);
+    pPath->AddArc(Corner, 90, 90);
+
+    // end path
+    pPath->CloseFigure();
+}
+
 void CWebbrowserDialogDlg::DrawSkin(CDC* pDC, BOOL bFirst)
 {
 	if (m_pBackSkin->m_pBitmap == NULL)	
@@ -134,10 +178,12 @@ void CWebbrowserDialogDlg::DrawSkin(CDC* pDC, BOOL bFirst)
 		CRoundRect rr;
 		rr.DrawRoundRect(&gps, Rect(rc.left + m_nOffset + 10, rc.top + m_nOffset+ 10, rc.Width() - 40 -21, rc.Height() - 40 - 21), color, 15, 1);
 		
-		//Pen pen(color, 1);
-		//GraphicsPath pPath;
-		//GetRoundRectPath(&pPath,  Rect(rc.left + m_nOffset + 10, rc.top + m_nOffset+ 10, rc.Width() - 40 -21, rc.Height() - 40 - 21), 10, 2);
-		//gps.DrawPath(&pen, &pPath);
+		/*
+		Pen pen(color, 1);
+		GraphicsPath pPath;
+		GetRoundRectPath(&pPath,  Rect(rc.left + m_nOffset + 10, rc.top + m_nOffset+ 10, rc.Width() - 40 -21, rc.Height() - 40 - 21), 10, 2);
+		gps.DrawPath(&pen, &pPath);
+        */
 
 		gps.DrawImage(m_pBackSkin->m_pBitmap, Rect(0, 0, x, y) , 0, 0, x, y, UnitPixel);
 	}
@@ -167,7 +213,7 @@ BOOL CWebbrowserDialogDlg::LoadSkin()
 	return TRUE;
 }
 
-void CWebbrowserDialogDlg::MoveButtonClick(int x, int y, int width, int height)
+void CWebbrowserDialogDlg::WebBrowserMoveClick(int x, int y, int width, int height)
 {
 	//m_btnOK.MoveWindow(x + m_nOffset, y + m_nOffset, width, height);
 	
